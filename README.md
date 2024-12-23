@@ -2,7 +2,7 @@
 
 This script attempts to mangle 1password .1pif file formated exports into an Apple Password CSV import file.
 
-If you have exported the 1password fault as 1pif file you should be able to do something like this:
+If you have exported the 1password vault as 1pif file you should be able to do something like this:
 ```
 python3 mangle.py data.1pif > out.csv
 ```
