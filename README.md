@@ -13,6 +13,8 @@ The resulting CSV should import correctly in Apple Passwords. Including secure n
 
 The 1pif format includes a few different possible fields for the same value (i.e. multiple locations where you might find the password). This script attempts to find the right one and fall back to other possible locations in the json format.
 
+This whole thing might be easier by enumerating the various `typeName` (i.e. `wallet.financial.CreditCard`, `webforms.WebForm`, etc) and creating a parser for each one. Credit cards seem like a pain for instance. Regardless, this script seems to work for 99% of the cases I have.
+
 ## Bugs
 
 If you run into bugs please create a PR with a fix.

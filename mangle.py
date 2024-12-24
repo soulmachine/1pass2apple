@@ -77,4 +77,13 @@ with open(filename, 'r') as file:
                     if data['typeName'] == 'securenotes.SecureNote':
                         note = section['fields'][0]['v']
 
+        # if note is still empty try to grab other possible entries
+        # this might work for typeName's like wallet.government.SsnUS or others
+        if note == '':
+            if 'name' in data['secureContents']:
+                note = "name: {}".format(data['secureContents']['name'])
+        
+            if 'number' in data['secureContents']:
+                note = "{}, number: {}".format(note,data['secureContents']['number'])
+
         w.writerow([title, url, username, password, note, otpauth])
