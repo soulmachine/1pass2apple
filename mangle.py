@@ -67,23 +67,33 @@ with open(filename, 'r') as file:
                     if 'designation' in field:
                         if field['designation'] == 'username':
                             username = field['value']
+        if not username:
+            if 'notesPlain' in data['secureContents'] and data['typeName'] == 'securenotes.SecureNote':
+                username = data['secureContents']['notesPlain']
 
         if 'sections' in  data['secureContents']:
             for section in data['secureContents']['sections']:
                 if 'fields' in section:
-                    if section['fields'][0]['t'] == 'one-time password':
-                        otpauth = section['fields'][0]['v']
-                    
-                    if data['typeName'] == 'securenotes.SecureNote':
-                        note = section['fields'][0]['v']
+                    for field in section['fields']:
+                        if field['t'] == 'one-time password':
+                            otpauth = field['v']
+                            break
 
         # if note is still empty try to grab other possible entries
         # this might work for typeName's like wallet.government.SsnUS or others
         if note == '':
             if 'name' in data['secureContents']:
-                note = "name: {}".format(data['secureContents']['name'])
+                note = f"name: {data['secureContents']['name']}\n\n"
         
             if 'number' in data['secureContents']:
-                note = "{}, number: {}".format(note,data['secureContents']['number'])
+                note += f"number: {note,data['secureContents']['number']}\n\n"
 
+        if data['typeName'] == 'securenotes.SecureNote':
+            if 'sections' in  data['secureContents']:
+                for section in data['secureContents']['sections']:
+                    if section['title'] != '' and 'fields' in section:
+                        note += f"{section['title']}:\n"
+                        for field in section['fields']:
+                            if field['t'] and field['k'] == 'string':
+                                note += f"{field['t']}: {field['v']}\n"
         w.writerow([title, url, username, password, note, otpauth])
